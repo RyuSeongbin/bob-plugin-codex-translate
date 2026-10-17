@@ -1,0 +1,106 @@
+{
+  "identifier": "com.bob-plugin-codex-translate",
+  "version": "0.4.2",
+  "category": "translate",
+  "name": "Codex",
+  "summary": "Codex 翻译 · 浏览器授权登录，无需 Token 或脚本，非官方插件。",
+  "minBobVersion": "1.21.0",
+  "options": [
+    {
+      "identifier": "login_action",
+      "type": "menu",
+      "title": "登录 · ChatGPT 账号",
+      "defaultValue": "check",
+      "menuValues": [
+        {
+          "title": "使用当前账号 / 首次登录",
+          "value": "check"
+        },
+        {
+          "title": "重新登录或更换账号",
+          "value": "login"
+        }
+      ],
+      "desc": "只需浏览器授权。点击 Verify 获取验证码和登录链接，完成授权后返回 Bob 再点 Verify。无需填写 Token 或运行脚本。更换账号成功后选回“使用当前账号 / 首次登录”。"
+    },
+    {
+      "identifier": "model",
+      "type": "menu",
+      "title": "模型 · 选择候选模型",
+      "defaultValue": "gpt-6-luna",
+      "menuValues": [
+        {
+          "title": "GPT-6.1 Sol",
+          "value": "gpt-6.1-sol"
+        },
+        {
+          "title": "GPT-6 Sol",
+          "value": "gpt-6-sol"
+        },
+        {
+          "title": "GPT-6 Luna · 默认",
+          "value": "gpt-6-luna"
+        },
+        {
+          "title": "GPT-6 Astra",
+          "value": "gpt-6-astra"
+        },
+        {
+          "title": "GPT-5.6 Sol",
+          "value": "gpt-5.6-sol"
+        },
+        {
+          "title": "GPT-5.6 Terra",
+          "value": "gpt-5.6-terra"
+        },
+        {
+          "title": "GPT-5.6 Luna",
+          "value": "gpt-5.6-luna"
+        },
+        {
+          "title": "自定义模型",
+          "value": "custom"
+        }
+      ],
+      "desc": "选择后点 Verify 确认账号可用性，会消耗少量额度。候选模型不代表已取得权限；不可用时可切换或填写自定义模型。"
+    },
+    {
+      "identifier": "custom_model",
+      "type": "text",
+      "title": "模型 · 自定义名称（可选）",
+      "textConfig": {
+        "type": "visible",
+        "placeholderText": "选择“自定义模型”时填写"
+      },
+      "desc": "仅选择自定义模型时填写。模型需支持 Codex ChatGPT 登录及所选思考等级。"
+    },
+    {
+      "identifier": "reasoning_effort",
+      "type": "menu",
+      "title": "思考等级",
+      "defaultValue": "low",
+      "menuValues": [
+        {
+          "title": "Low · 低（默认，日常翻译）",
+          "value": "low"
+        },
+        {
+          "title": "Medium · 中",
+          "value": "medium"
+        },
+        {
+          "title": "High · 高",
+          "value": "high"
+        },
+        {
+          "title": "XHigh · 很高",
+          "value": "xhigh"
+        }
+      ],
+      "desc": "日常翻译建议 Low。复杂长文可提高等级，可能增加等待时间和额度消耗；模型需支持所选等级。"
+    }
+  ],
+  "author": "Seongbin",
+  "homepage": "https://github.com/RyuSeongbin/bob-plugin-codex-translate",
+  "appcast": "https://raw.githubusercontent.com/RyuSeongbin/bob-plugin-codex-translate/main/appcast.json"
+}
