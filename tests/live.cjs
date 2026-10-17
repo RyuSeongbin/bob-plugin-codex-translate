@@ -9,7 +9,9 @@ const tokens = auth.tokens || {};
 if (auth.auth_mode === 'api_key' || !tokens.access_token || !tokens.account_id) throw new Error('需要本机 ChatGPT 模式登录');
 const claims = JSON.parse(Buffer.from(tokens.access_token.split('.')[1], 'base64url').toString('utf8'));
 const credentials = { access_token: tokens.access_token, account_id: tokens.account_id, expires_at: claims.exp };
-const context = { exports: {}, $option: { model: process.env.BOB_CODEX_TEST_MODEL || 'gpt-6.1-sol', reasoning_effort: process.env.BOB_CODEX_TEST_EFFORT || 'low' },
+const context = { exports: {}, $option: { model: process.env.BOB_CODEX_TEST_MODEL || 'gpt-6.1-sol', reasoning_effort: process.env.BOB_CODEX_TEST_EFFORT || 'low',
+    mode: process.env.BOB_CODEX_TEST_MODE || 'translate', system_prompt: 'Return only the result of the requested text task.',
+    user_prompt: 'Rewrite as a short, natural English sentence:\n$query.text' },
     $data: { fromBase64: value => ({ toUTF8: () => Buffer.from(value, 'base64').toString('utf8') }) },
     $file: { read: () => ({ toUTF8: () => JSON.stringify(credentials) }) },
     $http: { streamRequest: async options => {
@@ -31,8 +33,8 @@ const context = { exports: {}, $option: { model: process.env.BOB_CODEX_TEST_MODE
         } catch (_) { options.handler({ error: { message: '网络请求失败' } }); }
     } } };
 vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../plugin/service.js'), 'utf8'), context);
-context.exports.translate({ text: 'Thank you for your help.', detectFrom: 'en', detectTo: 'ko',
+context.exports.translate({ text: process.env.BOB_CODEX_TEST_TEXT || 'Thank you for your help.', detectFrom: 'en', detectTo: 'ko',
     onCompletion: value => {
         if (value.error) { console.error(value.error.message); process.exitCode = 1; }
-        else console.log('Codex 完成了翻译：' + value.result.content.text);
+        else console.log('Codex 完成文本处理（' + context.$option.mode + '）：' + value.result.content.text);
     } });

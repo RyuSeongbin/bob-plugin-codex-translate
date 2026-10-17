@@ -1,9 +1,9 @@
 {
   "identifier": "com.bob-plugin-codex-translate",
-  "version": "0.4.2",
+  "version": "0.5.0",
   "category": "translate",
   "name": "Codex",
-  "summary": "Codex 翻译 · 浏览器授权登录，无需 Token 或脚本，非官方插件。",
+  "summary": "Codex 翻译、润色和自定义提示词 · 浏览器授权登录，非官方插件。",
   "minBobVersion": "1.21.0",
   "options": [
     {
@@ -22,6 +22,50 @@
         }
       ],
       "desc": "只需浏览器授权。点击 Verify 获取验证码和登录链接，完成授权后返回 Bob 再点 Verify。无需填写 Token 或运行脚本。更换账号成功后选回“使用当前账号 / 首次登录”。"
+    },
+    {
+      "identifier": "mode",
+      "type": "menu",
+      "title": "模式",
+      "defaultValue": "translate",
+      "menuValues": [
+        {
+          "title": "翻译（默认）",
+          "value": "translate"
+        },
+        {
+          "title": "润色（保持原语言）",
+          "value": "polish"
+        },
+        {
+          "title": "自定义提示词",
+          "value": "custom"
+        }
+      ],
+      "desc": "翻译：转换为 Bob 目标语言。润色：优化原文表达，保持原语言。自定义：按下方 System Prompt 和 User Prompt 处理文本。"
+    },
+    {
+      "identifier": "system_prompt",
+      "type": "text",
+      "title": "自定义 · System Prompt",
+      "textConfig": {
+        "type": "visible",
+        "height": 100,
+        "placeholderText": "例如：你是一名商务邮件编辑，只返回修改后的正文。"
+      },
+      "desc": "仅自定义模式生效。支持 $query.text、$query.detectFromLang、$query.detectToLang、$query.detectFrom、$query.detectTo。无需填写 Token。"
+    },
+    {
+      "identifier": "user_prompt",
+      "type": "text",
+      "title": "自定义 · User Prompt",
+      "defaultValue": "$query.text",
+      "textConfig": {
+        "type": "visible",
+        "height": 100,
+        "placeholderText": "例如：请将下面内容改为简洁、自然的商务表达：\n$query.text"
+      },
+      "desc": "仅自定义模式生效。$query.text 为原文；未写该变量时，会在提示词末尾自动附上原文。"
     },
     {
       "identifier": "model",

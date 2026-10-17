@@ -21,7 +21,7 @@ digest = hashlib.sha256(output.read_bytes()).hexdigest()
 (output.parent / 'SHA256SUMS').write_text(digest + '  ' + output.name + '\n')
 appcast = { 'identifier': info['identifier'], 'versions': [{
     'version': info['version'],
-    'desc': '浏览器设备码授权登录；默认 GPT-6 Luna、Low 思考等级；支持候选模型、自定义模型及思考等级选择。预览版，完整 Bob 授权续期仍待验证。',
+    'desc': '新增翻译、润色、自定义提示词三种模式，默认翻译；自定义 System Prompt / User Prompt 支持原文及语言变量。保留浏览器登录、GPT-6 Luna 和 Low 默认设置。',
     'sha256': digest,
     'url': info['homepage'] + '/releases/download/v' + info['version'] + '/' + output.name,
     'minBobVersion': info['minBobVersion'], 'timestamp': int(time.time() * 1000)

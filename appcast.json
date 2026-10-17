@@ -2,12 +2,12 @@
   "identifier": "com.bob-plugin-codex-translate",
   "versions": [
     {
-      "version": "0.4.2",
-      "desc": "浏览器设备码授权登录；默认 GPT-6 Luna、Low 思考等级；支持候选模型、自定义模型及思考等级选择。预览版，完整 Bob 授权续期仍待验证。",
-      "sha256": "4af00b5d2f6d90f1b8c7e38a34cafe95d49e8f380760b936e044aa12f3a7b986",
-      "url": "https://github.com/RyuSeongbin/bob-plugin-codex-translate/releases/download/v0.4.2/bob-plugin-codex-translate-v0.4.2.bobplugin",
+      "version": "0.5.0",
+      "desc": "新增翻译、润色、自定义提示词三种模式，默认翻译；自定义 System Prompt / User Prompt 支持原文及语言变量。保留浏览器登录、GPT-6 Luna 和 Low 默认设置。",
+      "sha256": "2fbaac78dca6f63718bb8ea6d388a44a7790d29fdd31801a0c6009c6469efc98",
+      "url": "https://github.com/RyuSeongbin/bob-plugin-codex-translate/releases/download/v0.5.0/bob-plugin-codex-translate-v0.5.0.bobplugin",
       "minBobVersion": "1.21.0",
-      "timestamp": 1792245903558
+      "timestamp": 1792248232997
     }
   ]
 }

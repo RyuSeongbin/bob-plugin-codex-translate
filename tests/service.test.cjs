@@ -19,6 +19,58 @@ const done = text => frame({ type: 'response.completed', response: { status: 'co
     { type: 'message', content: [{ type: 'output_text', text }] }
 ] } });
 
+test('mode defaults to translation and ignores custom prompts in translation mode', () => {
+    const body = runtime(null, null, { system_prompt: 'ignore', user_prompt: 'ignore' }).requestBody({
+        text: 'Hello', detectFrom: 'en', detectTo: 'ko'
+    }, 'gpt-6-luna');
+    assert.match(body.instructions, /Translate the user text into Korean/);
+    assert.equal(body.input[0].content[0].text, 'Hello');
+    assert.ok(!body.instructions.includes('ignore'));
+});
+test('polish keeps original language in prompt and streamed/final result metadata', () => {
+    let completion, streamed;
+    runtime(options => {
+        assert.match(options.body.instructions, /original language/);
+        assert.match(options.body.instructions, /without translating/);
+        assert.ok(!options.body.instructions.includes('Translate the user text into'));
+        options.streamHandler({ text: frame({ type: 'response.output_text.delta', delta: 'Please send it.' }) + done('Please send it.') });
+        options.handler({ response: { statusCode: 200 } });
+    }, null, { mode: 'polish' }).translate({ text: 'Please sends it.', detectFrom: 'en', detectTo: 'auto',
+        onStream: value => { streamed = value; }, onCompletion: value => { completion = value; } });
+    assert.equal(streamed.to, 'en');
+    assert.equal(completion.result.to, 'en');
+});
+test('custom mode expands prompt variables once and preserves literal replacement characters', () => {
+    const original = 'Original $query.detectToLang $&';
+    const body = runtime(null, null, { mode: 'custom', system_prompt: 'Edit $query.detectFromLang for $query.detectToLang.',
+        user_prompt: '$query.detectFrom -> $query.detectTo\n$query.text' }).requestBody({
+        text: original, detectFrom: 'en', detectTo: 'ko'
+    }, 'gpt-6-luna');
+    assert.equal(body.instructions, 'Edit English for Korean.');
+    assert.equal(body.input[0].content[0].text, 'en -> ko\n' + original);
+});
+test('custom mode appends original when template does not include its placeholder', () => {
+    for (const template of ['Summarize.', 'Keep $query.textual literal.']) {
+        const body = runtime(null, null, { mode: 'custom', user_prompt: template }).requestBody({ text: 'Original', detectTo: 'ko' }, 'gpt-6-luna');
+        assert.equal(body.input[0].content[0].text, template + '\n\nOriginal');
+    }
+    const body = runtime(null, null, { mode: 'custom' }).requestBody({ text: 'Original', detectTo: 'ko' }, 'gpt-6-luna');
+    assert.equal(body.input[0].content[0].text, 'Original');
+});
+test('invalid mode cannot send a request', () => {
+    let completion;
+    runtime(() => assert.fail('must not send'), null, { mode: 'invalid' }).translate({
+        text: 'Hi', detectFrom: 'en', detectTo: 'ko', onCompletion: value => { completion = value; }
+    });
+    assert.equal(completion.error.type, 'param');
+});
+test('mode configuration has three choices and defaults to translate', () => {
+    const info = JSON.parse(fs.readFileSync(path.join(__dirname, '../plugin/info.json'), 'utf8'));
+    const mode = info.options.find(option => option.identifier === 'mode');
+    assert.equal(mode.defaultValue, 'translate');
+    assert.deepEqual(mode.menuValues.map(item => item.value), ['translate', 'polish', 'custom']);
+});
+
 test('reasoning defaults to low and selected levels are sent to Codex', () => {
     for (const effort of [undefined, 'low', 'medium', 'high', 'xhigh']) {
         let completion;
